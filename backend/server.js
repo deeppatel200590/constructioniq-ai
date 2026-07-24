@@ -107,7 +107,7 @@ app.post("/api/auth/verify",async(req,res)=>{
     }
 })
 
-app.post("/api/auth/login",(req,res)=>{
+app.post("/api/auth/login",async(req,res)=>{
     const {email,pass} = req.body;
     const user = await User.findOne({ email });
 
@@ -132,8 +132,8 @@ app.post("/api/auth/login",(req,res)=>{
         process.env.JWT_SECRET,
         { expiresIn: "7d" }
     );
-     res.json({
-        message: "Login successful",
+    res.json({
+        message: "success",
         token
     });
 })

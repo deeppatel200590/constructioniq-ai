@@ -9,12 +9,14 @@ const Login = () => {
     const [email,setEmail] = useState("");
     const [pass,setPass] = useState("");
 
-    const submitlogin = async() => {
+    const submitlogin = async(e) => {
+        e.preventDefault();
         const userData = {
             email,pass
         }
         const res = await axios.post("http://localhost:5000/api/auth/login",userData);
         if(res.data.message == "success"){
+            localStorage.setItem("token",res.data.token);
             navigate("/dashboard");
         }
         else{
