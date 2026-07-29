@@ -5,6 +5,12 @@ import { Route,Routes } from "react-router-dom";
 import Verify from "./components/Verify"
 import Dashboard from "./components/Layout/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Project from "./components/Layout/Project/Project.jsx";
+import Upload from "./components/Layout/Project/Upload.jsx";
+import Analyze from "./components/Layout/Project/Analyze.jsx";
+import Reports from "./components/Layout/Project/Reports.jsx";
+import History from "./components/Layout/Project/History.jsx";
+import ProjectSetting from "./components/Layout/Project/ProjectsSetting.jsx";
 
 const App = () => {
   return (
@@ -19,6 +25,12 @@ const App = () => {
         {/* Protected Route */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/project/:id" element={<Project/>}></Route>
+          <Route path="/upload/:id" element={<Upload/>}/>
+          <Route path="/analyze/:id" element={<Analyze/>}/>
+          <Route path="/reports/:id" element={<Reports/>}/>
+          <Route path="/history/:id" element={<History/>}/>
+          <Route path="/projectsetting/:id" element={<ProjectSetting/>}/>
         </Route>
 
       </Routes>

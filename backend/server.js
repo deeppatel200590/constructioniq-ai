@@ -6,6 +6,9 @@ import sendEmail from "./utils/Mail.js";
 import bcrypt from "bcrypt";
 import User from "./Model/user.js";
 import jwt from "jsonwebtoken";
+import Project from "./Model/project.js"
+import upload from "./Middle/Multer.js";
+import Upload from "./Model/upload.js";
 
 dotenv.config();
 
@@ -137,6 +140,70 @@ app.post("/api/auth/login",async(req,res)=>{
         token
     });
 })
+
+//Create Project URL
+app.post("/api/createproject",async(req,res)=>{
+    try{
+        const {name,desc,token} = req.body;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const id = decoded.id;
+        const create = new Project({
+            name,
+            description:desc,
+            owner:id,
+        });
+        await create.save();
+        if(create){
+            return res.json({message:"success",id:create._id,name:create.name});
+        }
+        else{
+            return res.json({message:"Not created!"});
+        }
+    }
+    catch(err){
+        return res.json({message:"Something went Wrong",err:err.message});
+    }
+})
+
+// Get Name of Project
+app.post("/api/getname",async(req,res)=>{
+    try{
+        const id = req.body.id;
+        const data = await Project.findOne({_id:id});
+        if(data){
+            return res.json({message:"success",data});
+        }
+        else{
+            return res.json({message:"Something Wrong!"});
+        }
+    }
+    catch(err){
+        return res.json({message:err.message});
+    }
+})
+
+//For upload files & save it
+app.post("/api/upload", upload.array("files"), async (req, res) => {
+  try {
+    const fileData = req.files.map(file => ({
+      projectId: req.body.id,          // your frontend sends "id"
+      originalName: file.originalname,
+      path: file.path,
+    }));
+
+    await Upload.insertMany(fileData);
+
+    res.json({
+      message: "Files uploaded successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Something went wrong",
+      error: err.message,
+    });
+  }
+});
 
 connectDB();
 // Server
